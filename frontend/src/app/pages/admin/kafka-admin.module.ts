@@ -9,13 +9,17 @@ import { OverviewComponent } from './overview/overview.component';
 import {KafkaAdminRoutingModule} from './kafka-admin-routing.module';
 import {Ng2SmartTableModule} from "ng2-smart-table";
 import { ClusterComponent } from './cluster/cluster.component';
+import { TopicOverviewComponent } from './overview/topic-overview/topic-overview.component';
+import { BrokerOverviewComponent } from './overview/broker-overview/broker-overview.component';
 
 @NgModule({
   declarations: [
     TopicsComponent,
     KafkaAdminComponent,
     OverviewComponent,
-    ClusterComponent],
+    ClusterComponent,
+    TopicOverviewComponent,
+    BrokerOverviewComponent],
   imports: [
     CommonModule,
     RouterModule,

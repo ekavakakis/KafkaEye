@@ -1,7 +1,15 @@
-import { Component, OnInit } from '@angular/core';
-import {KafkaAdminService} from "../kafka-admin.service";
-import {KafkaTopic} from "../../../@types/kafka-models";
+import {Component, OnInit} from '@angular/core';
+import {KafkaTopicDTO} from "../../../@types/kafka-models";
 import {LocalDataSource} from "ng2-smart-table";
+import {TopicRepository} from "../../../store/repositories/topic.repository";
+import {KafkaAdminService} from "../kafka-admin.service";
+import {map} from "rxjs/operators";
+
+declare interface TopicGridData {
+  name: string;
+  numOfPartitions: number;
+  internal: boolean;
+};
 
 @Component({
   selector: 'ngx-topics',
@@ -10,54 +18,78 @@ import {LocalDataSource} from "ng2-smart-table";
       <nb-card-header>
         Topics
       </nb-card-header>
-    <nb-card-body>
-        <ng2-smart-table [settings]="settings" [source]="source"></ng2-smart-table>
-    </nb-card-body>
-  </nb-card>`,
+      <nb-card-body>
+        <ng2-smart-table [settings]="settings" [source]="source" (delete)="onDelete($event)"></ng2-smart-table>
+      </nb-card-body>
+    </nb-card>`,
   styleUrls: ['./topics.component.scss']
 })
 export class TopicsComponent implements OnInit {
 
-  topics: KafkaTopic[]
+  gridData: any[];
   source: LocalDataSource = new LocalDataSource();
 
-  settings = {
-    add: {
-      addButtonContent: '<i class="nb-plus"></i>',
-      createButtonContent: '<i class="nb-checkmark"></i>',
-      cancelButtonContent: '<i class="nb-close"></i>',
-    },
-    edit: {
-      editButtonContent: '<i class="nb-edit"></i>',
-      saveButtonContent: '<i class="nb-checkmark"></i>',
-      cancelButtonContent: '<i class="nb-close"></i>',
-    },
-    delete: {
-      deleteButtonContent: '<i class="nb-trash"></i>',
-      confirmDelete: true,
-    },
-    columns: {
-      topicId: {
-        title: 'Topic Id',
-        type: 'string',
+  settings =
+    {
+      mode: 'external',
+      actions: {
+        delete: true,
+        edit: true
       },
-      name: {
-        title: 'Name',
-        type: 'String',
+      add: {
+        addButtonContent: '<i class="nb-plus"></i>',
+        createButtonContent: '<i class="nb-checkmark"></i>',
+        cancelButtonContent: '<i class="nb-close"></i>',
       },
-      internal: {
-        title: 'Is Internal',
-        type: 'boolean',
-      }
-    },
-  };
+      edit: {
+        editButtonContent: '<i class="nb-edit"></i>',
+        saveButtonContent: '<i class="nb-checkmark"></i>',
+        cancelButtonContent: '<i class="nb-close"></i>',
+      },
+      delete: {
+        deleteButtonContent: '<i class="nb-trash"></i>',
+        confirmDelete: false,
+      },
+      columns: {
+        name: {
+          title: 'Name',
+          type: 'String',
+        },
+        numOfPartitions: {
+          title: 'Number Of Partitions',
+          type: 'String',
+        },
+        internal: {
+          title: 'Is Internal',
+          type: 'boolean',
+        }
+      },
+    };
 
-  constructor(private service: KafkaAdminService) {
-    service.getTopics().subscribe(data => {
-      this.source.load(data);
-    });
+  constructor(private service: KafkaAdminService, private topicRepository: TopicRepository) {
+    this.getData();
   }
 
-  ngOnInit(): void {}
+  getData() {
+    this.topicRepository.topics$
+      .pipe(
+        map((data: KafkaTopicDTO[]) => {
+          const gridData: TopicGridData[] = data.map(item => <TopicGridData>{
+            name: item.name,
+            internal: item.internal,
+            numOfPartitions: item.topicPartitions.length
+          });
+          this.source.load(gridData);
+        })
+      ).subscribe()
+  }
+
+  onDelete($event) {
+    const topicName: string = $event.data.name;
+    this.service.deleteTopic(topicName).subscribe((data) => this.getData());
+  }
+
+  ngOnInit(): void {
+  }
 
 }

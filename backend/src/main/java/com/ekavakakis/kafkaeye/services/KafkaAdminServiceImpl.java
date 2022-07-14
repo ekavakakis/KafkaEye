@@ -1,19 +1,20 @@
 package com.ekavakakis.kafkaeye.services;
 
 import com.ekavakakis.kafkaeye.models.dto.DescribeClusterDTO;
-import com.ekavakakis.kafkaeye.models.entities.KafkaNode;
 import com.ekavakakis.kafkaeye.models.dto.KafkaTopicDTO;
+import com.ekavakakis.kafkaeye.models.entities.KafkaNode;
 import com.ekavakakis.kafkaeye.models.entities.KafkaTopicPartition;
 import com.ekavakakis.kafkaeye.utils.InterfaceTransformation;
 import org.apache.kafka.clients.admin.*;
 import org.apache.kafka.common.KafkaFuture;
-import org.apache.kafka.common.Node;
 import org.apache.kafka.common.TopicPartitionInfo;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.ExecutionException;
-import java.util.stream.Collectors;
 
 @Service
 public class KafkaAdminServiceImpl implements KafkaAdminService {
@@ -37,7 +38,7 @@ public class KafkaAdminServiceImpl implements KafkaAdminService {
         try {
             InterfaceTransformation.toKafkaNode(new ArrayList<>(result.nodes().get()));
 
-            dto.setController(InterfaceTransformation.toKafkaNode(Arrays.asList(result.controller().get())).get(0));
+            dto.setController(InterfaceTransformation.toKafkaNode(List.of(result.controller().get())).get(0));
             dto.setNodes(InterfaceTransformation.toKafkaNode(new ArrayList<>(result.nodes().get())));
         } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
@@ -63,8 +64,8 @@ public class KafkaAdminServiceImpl implements KafkaAdminService {
             DescribeTopicsResult describeTopicsResult = adminClient
                     .describeTopics(
                             topicListings.stream()
-                            .map(TopicListing::name)
-                            .collect(Collectors.toList())
+                                    .map(TopicListing::name)
+                                    .toList()
                     );
 
             topicDescriptions = describeTopicsResult.topicNameValues()
@@ -79,30 +80,34 @@ public class KafkaAdminServiceImpl implements KafkaAdminService {
                                     .partitions()
                                     .stream()
                                     .map((TopicPartitionInfo topicPartitionInfo) ->
-                                                new KafkaTopicPartition(
-                                                        topicPartitionInfo.partition(),
-                                                        new KafkaNode(topicPartitionInfo.leader()),
-                                                        InterfaceTransformation.toKafkaNode(topicPartitionInfo.replicas()),
-                                                        InterfaceTransformation.toKafkaNode(topicPartitionInfo.isr()))
-                                    ).collect(Collectors.toList());
+                                            new KafkaTopicPartition(
+                                                    topicPartitionInfo.partition(),
+                                                    new KafkaNode(topicPartitionInfo.leader()),
+                                                    InterfaceTransformation.toKafkaNode(topicPartitionInfo.replicas()),
+                                                    InterfaceTransformation.toKafkaNode(topicPartitionInfo.isr()))
+                                    ).toList();
 
                             dto = new KafkaTopicDTO(
                                     topicDescription.name(),
                                     topicDescription.isInternal(),
-                                    topicDescription.topicId().toString(),
+                                    topicDescription.name(),
                                     topicPartitions);
                         } catch (InterruptedException | ExecutionException e) {
                             throw new RuntimeException("Error fetching topic listings", e);
                         }
                         return dto;
                     })
-                    .collect(Collectors.toList());
+                    .toList();
 
         } catch (InterruptedException | ExecutionException e) {
             throw new RuntimeException("Error fetching topic listings", e);
         }
 
         return Optional.ofNullable(topicDescriptions);
+    }
+
+    public void deleteTopic(String topicName) {
+        adminClient.deleteTopics(List.of(topicName));
     }
 
 }

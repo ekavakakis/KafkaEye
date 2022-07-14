@@ -10,18 +10,7 @@ import {first, map} from "rxjs/operators";
 })
 export class ClusterComponent implements OnInit {
 
-  clusterDescription: DescribeClusterDTO;
-
   constructor(private service: KafkaAdminService) {
-
-    service.getClusterDescription()
-    .pipe(
-      first(),
-      map((data: DescribeClusterDTO) => {
-        this.clusterDescription = data;
-      })
-    ).subscribe();
-
   }
 
   ngOnInit(): void {

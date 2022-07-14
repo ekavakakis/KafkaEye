@@ -12,8 +12,13 @@ import java.util.Optional;
 public interface KafkaAdminService {
 
     DescribeTopicsResult describeTopics(Collection<String> topicNames);
+
     DescribeClusterDTO describeCluster();
+
     DeleteTopicsResult deleteTopics(Collection<String> topics);
+
     Optional<List<KafkaTopicDTO>> listTopics();
+
+    void deleteTopic(String topicName);
 
 }

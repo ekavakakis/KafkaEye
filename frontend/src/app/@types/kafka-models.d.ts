@@ -1,7 +1,15 @@
-export interface KafkaTopic {
+export interface KafkaTopicDTO {
   name: string;
-  uuid: string;
+  id: string;
   internal: boolean;
+  topicPartitions: KafkaTopicPartition[];
+}
+
+export interface KafkaTopicPartition {
+  partition: number;
+  leader: KafkaNode;
+  replicas: KafkaNode[];
+  isr: KafkaNode[];
 }
 
 export interface KafkaNode {

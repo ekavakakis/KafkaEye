@@ -3,9 +3,7 @@ package com.ekavakakis.kafkaeye.controllers;
 import com.ekavakakis.kafkaeye.models.dto.DescribeClusterDTO;
 import com.ekavakakis.kafkaeye.models.dto.KafkaTopicDTO;
 import com.ekavakakis.kafkaeye.services.KafkaAdminService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
 
@@ -21,12 +19,16 @@ public class AdminController {
 
     @GetMapping("list-topics")
     Collection<KafkaTopicDTO> getTopics() {
-        return kafkaAdminService.listTopics().get();
-    }
+        return kafkaAdminService.listTopics().get();}
 
     @GetMapping("describe-cluster")
     DescribeClusterDTO describeCluster() {
         return kafkaAdminService.describeCluster();
+    }
+
+    @DeleteMapping("topic/{name}")
+    void deleteTopic(@PathVariable("name") String name) {
+        kafkaAdminService.deleteTopic(name);
     }
 
 }

@@ -14,7 +14,7 @@ public class KafkaTopicDTO {
 
     private String name;
     private boolean internal;
-    private String topicId;
+    private String id;
     private List<KafkaTopicPartition> topicPartitions;
 
 }

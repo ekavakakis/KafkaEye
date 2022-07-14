@@ -1,20 +1,6 @@
 <div class="col-sm">
-  <nb-card size="tiny">
-    <nb-card-body>
-      <div class="h6">Brokers</div>
-      <div>{{ clusterDescription?.nodes?.length }}</div>
-      <div class="h6">Active Controller</div>
-      <div>{{ clusterDescription?.controller?.host }}:{{ clusterDescription?.controller?.port }}</div>
-    </nb-card-body>
-  </nb-card>
+  <ngx-broker-overview></ngx-broker-overview>
 </div>
 <div class="col-sm" >
-  <nb-card size="tiny">
-    <nb-card-body>
-      <div class="h6">Topics</div>
-      <div>{{ clusterDescription?.nodes?.length }}</div>
-      <div class="h6">Total Partitions</div>
-      <div>{{clusterDescription?.nodes?.length}}</div>
-    </nb-card-body>
-  </nb-card>
+  <ngx-topic-overview></ngx-topic-overview>
 </div>

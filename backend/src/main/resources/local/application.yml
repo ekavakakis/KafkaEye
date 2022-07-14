@@ -1,0 +1,7 @@
+spring:
+  kafka:
+    bootstrap-servers: localhost:9092
+krb:
+  truststore:
+    location: krb/client_certs.jks
+    password: P@ssw0rd#123

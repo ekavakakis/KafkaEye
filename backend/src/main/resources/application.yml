@@ -1,3 +1,8 @@
 spring:
   kafka:
-    bootstrap-servers: localhost:9092
+    bootstrap-servers: kafka1.daoslab.intrasoft-intl.com:9093
+
+krb:
+  truststore:
+    location: C:\Users\ekavakak\Dev\KafkaEye\backend\krb\client_certs.jks
+    password: P@ssw0rd#123
