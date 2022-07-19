@@ -3,7 +3,6 @@ import {KafkaTopicDTO} from "../../@types/kafka-models";
 import {selectAllEntities, setEntities, withEntities} from "@ngneat/elf-entities";
 import {Injectable} from "@angular/core";
 
-
 const store = createStore(
   {name: 'topics'},
   withEntities<KafkaTopicDTO>()

@@ -1,0 +1,8 @@
+<nb-card size="tiny">
+  <nb-card-body>
+    <div class="h6">Brokers</div>
+    <div>{{ (clusterRepo.cluster$ | async)?.nodes?.length }}</div>
+    <div class="h6">Active Controller</div>
+    <div>{{ (clusterRepo.cluster$ | async)?.controller?.host }}:{{ (clusterRepo.cluster$ | async)?.controller?.port }}</div>
+  </nb-card-body>
+</nb-card>

@@ -4,6 +4,8 @@ import {LocalDataSource} from "ng2-smart-table";
 import {TopicRepository} from "../../../store/repositories/topic.repository";
 import {KafkaAdminService} from "../kafka-admin.service";
 import {map} from "rxjs/operators";
+import {NbDialogService} from "@nebular/theme";
+import {CreateTopicComponent} from "./create-topic/create-topic.component";
 
 declare interface TopicGridData {
   name: string;
@@ -21,6 +23,9 @@ declare interface TopicGridData {
       <nb-card-body>
         <ng2-smart-table [settings]="settings" [source]="source" (delete)="onDelete($event)"></ng2-smart-table>
       </nb-card-body>
+      <nb-card-footer>
+        <button nbButton type="button" status="primary" (click)="showDialog()">Create Topic</button>
+      </nb-card-footer>
     </nb-card>`,
   styleUrls: ['./topics.component.scss']
 })
@@ -66,7 +71,9 @@ export class TopicsComponent implements OnInit {
       },
     };
 
-  constructor(private service: KafkaAdminService, private topicRepository: TopicRepository) {
+  constructor(private service: KafkaAdminService,
+              private topicRepository: TopicRepository,
+              private dialogService: NbDialogService) {
     this.getData();
   }
 
@@ -87,6 +94,10 @@ export class TopicsComponent implements OnInit {
   onDelete($event) {
     const topicName: string = $event.data.name;
     this.service.deleteTopic(topicName).subscribe((data) => this.getData());
+  }
+
+  showDialog() {
+    this.dialogService.open(CreateTopicComponent);
   }
 
   ngOnInit(): void {

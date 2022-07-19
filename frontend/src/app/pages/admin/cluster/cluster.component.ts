@@ -10,10 +10,8 @@ import {first, map} from "rxjs/operators";
 })
 export class ClusterComponent implements OnInit {
 
-  constructor(private service: KafkaAdminService) {
-  }
+  constructor() {}
 
-  ngOnInit(): void {
-  }
+  ngOnInit(): void {}
 
 }

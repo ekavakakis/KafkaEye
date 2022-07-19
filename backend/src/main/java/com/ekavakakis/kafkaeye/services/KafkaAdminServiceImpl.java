@@ -1,20 +1,23 @@
 package com.ekavakakis.kafkaeye.services;
 
+import com.ekavakakis.kafkaeye.models.dto.ConsumerGroupDTO;
+import com.ekavakakis.kafkaeye.models.dto.CreateTopicDTO;
 import com.ekavakakis.kafkaeye.models.dto.DescribeClusterDTO;
 import com.ekavakakis.kafkaeye.models.dto.KafkaTopicDTO;
 import com.ekavakakis.kafkaeye.models.entities.KafkaNode;
 import com.ekavakakis.kafkaeye.models.entities.KafkaTopicPartition;
 import com.ekavakakis.kafkaeye.utils.InterfaceTransformation;
 import org.apache.kafka.clients.admin.*;
+import org.apache.kafka.common.ConsumerGroupState;
 import org.apache.kafka.common.KafkaFuture;
+import org.apache.kafka.common.MetricName;
 import org.apache.kafka.common.TopicPartitionInfo;
+import org.apache.kafka.common.metrics.KafkaMetric;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.ExecutionException;
+import java.util.stream.Collectors;
 
 @Service
 public class KafkaAdminServiceImpl implements KafkaAdminService {
@@ -108,6 +111,43 @@ public class KafkaAdminServiceImpl implements KafkaAdminService {
 
     public void deleteTopic(String topicName) {
         adminClient.deleteTopics(List.of(topicName));
+    }
+
+    @Override
+    public List<ConsumerGroupDTO> listConsumerGroups(Set<String> states) {
+        ListConsumerGroupsOptions options = new ListConsumerGroupsOptions();
+        if (states != null && !states.isEmpty()) {
+            options.inStates(states.stream().map(ConsumerGroupState::parse).collect(Collectors.toSet()));
+        }
+        ListConsumerGroupsResult result = adminClient.listConsumerGroups(options);
+        try {
+            return result.all().get()
+                    .stream()
+                    .map((ConsumerGroupListing listing) -> new ConsumerGroupDTO(
+                            listing.groupId(),
+                            listing.groupId(),
+                            listing.isSimpleConsumerGroup(),
+                            listing.state().map(ConsumerGroupState::toString)
+                                    .orElseGet(ConsumerGroupState.UNKNOWN::toString))
+                    ).toList();
+        } catch (ExecutionException | InterruptedException e) {
+            throw new RuntimeException("Failed fetching Consumer Groups", e);
+        }
+    }
+
+    @Override
+    public Map<MetricName, KafkaMetric> getMetrics() {
+        return (Map<MetricName, KafkaMetric>) adminClient.metrics();
+    }
+
+    @Override
+    public void createTopic(CreateTopicDTO createTopicDTO) {
+        adminClient.createTopics(List.of(
+                new NewTopic(
+                        createTopicDTO.getName(),
+                        createTopicDTO.getPartitions(),
+                        createTopicDTO.getReplicationFactor())
+        ));
     }
 
 }

@@ -14,13 +14,27 @@ export interface KafkaTopicPartition {
 
 export interface KafkaNode {
   id: number;
-  idString: String;
-  host: String;
+  idString: string;
+  host: string;
   port: number;
-  rack: String;
+  rack: string;
 }
 
 export interface DescribeClusterDTO {
+  id: string;
   nodes: KafkaNode[];
   controller: KafkaNode;
+}
+
+export interface ConsumerGroupDTO {
+  id: string;
+  groupId: string;
+  isSimpleConsumerGroup: boolean;
+  state: string;
+}
+
+export interface CreateTopicDTO {
+     name: string
+     replicationFactor: number;
+     partitions: number;
 }
