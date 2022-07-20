@@ -17,20 +17,20 @@ import {NbDialogRef} from "@nebular/theme";
           <div class="row">
             <div class="col-sm">
               <div class="form-group">
-                <label for="name" class="label">First Name</label>
+                <label for="name" class="label">Name</label>
                 <input id="name" type="text" nbInput fullWidth formControlName="name" placeholder="Name">
               </div>
             </div>
             <div class="col-sm">
               <div class="form-group">
-                <label for="replicationFactor" class="label">First Name</label>
+                <label for="replicationFactor" class="label">Replication Factor</label>
                 <input id="replicationFactor" type="number" nbInput fullWidth formControlName="replicationFactor"
                        placeholder="Replication Factor">
               </div>
             </div>
             <div class="col-sm">
               <div class="form-group">
-                <label for="numberOfPartitions" class="label">First Name</label>
+                <label for="numberOfPartitions" class="label">Number of Partitions</label>
                 <input id="numberOfPartitions" type="number" nbInput fullWidth formControlName="partitions"
                        placeholder="Number Of Partitions">
               </div>

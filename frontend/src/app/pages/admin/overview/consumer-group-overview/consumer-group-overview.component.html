@@ -1,18 +1,35 @@
-<nb-card size="tiny">
-  <nb-card-body>
-    <div class="h6">Consumer Groups</div>
-    <div>{{ (consumerGroupRepo.groups$ | async)?.length }}</div>
-    <div class="h6">Dead</div>
-    <div>10</div>
-    <div class="h6">Rebalancing</div>
-    <div>10</div>
-    <div class="h6">Empty</div>
-    <div>10</div>
-    <div class="h6">Preparing Rebalance</div>
-    <div>10</div>
-    <div class="h6">Stable</div>
-    <div>10</div>
-    <div class="h6">Unknown</div>
-    <div>10</div>
-  </nb-card-body>
-</nb-card>
+<nb-flip-card>
+  <nb-card-front>
+    <nb-card size="tiny">
+      <nb-card-header>
+        <span>Consumer Group Overview</span>
+      </nb-card-header>
+      <nb-card-body>
+        <div *ngFor="let consumerGroup of dataPerGroup | keyvalue" >
+          <div>{{consumerGroup.key}} : {{consumerGroup.value}}</div>
+        </div>
+      </nb-card-body>
+    </nb-card>
+  </nb-card-front>
+  <nb-card-back>
+    <nb-card size="tiny">
+      <nb-card-header>
+        <span>Consumer Groups</span>
+      </nb-card-header>
+      <nb-card-body>
+        <nb-list>
+          <nb-list-item *ngFor="let group of consumerGroupRepo.groups$ | async">
+            <div>
+              <div class="h6">Name</div>
+              <div>{{ group.id }}</div>
+              <div class="h6">Group</div>
+              <div>{{ group.groupId }}</div>
+              <div class="h6">State</div>
+              <div>{{ group.state }}</div>
+            </div>
+          </nb-list-item>
+        </nb-list>
+      </nb-card-body>
+    </nb-card>
+  </nb-card-back>
+</nb-flip-card>

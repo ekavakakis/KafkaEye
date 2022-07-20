@@ -5,6 +5,9 @@ import {ClusterRepository} from "../../../../store/repositories/cluster.reposito
   selector: 'ngx-broker-detail',
   template: `
     <nb-card [size]="'tiny'">
+      <nb-card-header>
+        <span>Broker list</span>
+      </nb-card-header>
       <nb-list>
         <nb-list-item *ngFor="let broker of (clusterRepo.cluster$ | async)?.nodes">
           {{ broker.host }}:{{ broker.port }}

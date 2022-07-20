@@ -1,4 +1,7 @@
 <nb-card size="tiny">
+  <nb-card-header>
+    <span>Cluster Overview</span>
+  </nb-card-header>
   <nb-card-body>
     <div class="h6">Brokers</div>
     <div>{{ (clusterRepo.cluster$ | async)?.nodes?.length }}</div>
