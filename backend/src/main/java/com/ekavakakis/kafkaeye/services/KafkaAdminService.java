@@ -1,9 +1,6 @@
 package com.ekavakakis.kafkaeye.services;
 
-import com.ekavakakis.kafkaeye.models.dto.ConsumerGroupDTO;
-import com.ekavakakis.kafkaeye.models.dto.CreateTopicDTO;
-import com.ekavakakis.kafkaeye.models.dto.DescribeClusterDTO;
-import com.ekavakakis.kafkaeye.models.dto.KafkaTopicDTO;
+import com.ekavakakis.kafkaeye.models.dto.*;
 import org.apache.kafka.clients.admin.ConsumerGroupListing;
 import org.apache.kafka.clients.admin.DeleteTopicsResult;
 import org.apache.kafka.clients.admin.DescribeTopicsResult;
@@ -27,6 +24,8 @@ public interface KafkaAdminService {
     void deleteTopic(String topicName);
 
     List<ConsumerGroupDTO> listConsumerGroups(Set<String> states);
+
+    List<ConsumerGroupDescriptionDTO> describeConsumerGroups(Set<String> groupIds);
 
     Map<MetricName, KafkaMetric> getMetrics();
 
