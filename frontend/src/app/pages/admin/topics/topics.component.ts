@@ -6,6 +6,7 @@ import {KafkaAdminService} from "../kafka-admin.service";
 import {map} from "rxjs/operators";
 import {NbDialogService} from "@nebular/theme";
 import {CreateTopicComponent} from "./create-topic/create-topic.component";
+import {TopicConsumeComponent} from "./topic-consume/topic-consume.component";
 
 declare interface TopicGridData {
   name: string;
@@ -21,7 +22,7 @@ declare interface TopicGridData {
         Topics
       </nb-card-header>
       <nb-card-body>
-        <ng2-smart-table [settings]="settings" [source]="source" (delete)="onDelete($event)"></ng2-smart-table>
+        <ng2-smart-table [settings]="settings" [source]="source" (edit)="onEdit($event)" (delete)="onDelete($event)"></ng2-smart-table>
       </nb-card-body>
       <nb-card-footer>
         <button nbButton type="button" status="primary" (click)="showDialog()">Create Topic</button>
@@ -47,7 +48,7 @@ export class TopicsComponent implements OnInit {
         cancelButtonContent: '<i class="nb-close"></i>',
       },
       edit: {
-        editButtonContent: '<i class="nb-edit"></i>',
+        editButtonContent: '<span><nb-icon icon="eye"></nb-icon></span>',
         saveButtonContent: '<i class="nb-checkmark"></i>',
         cancelButtonContent: '<i class="nb-close"></i>',
       },
@@ -97,10 +98,15 @@ export class TopicsComponent implements OnInit {
   }
 
   showDialog() {
-    this.dialogService.open(CreateTopicComponent);
+    this.dialogService.open(CreateTopicComponent, {closeOnBackdropClick: false});
   }
 
   ngOnInit(): void {
+  }
+
+  onEdit($event: any) {
+    const topicName: string = $event.data.name;
+    this.dialogService.open(TopicConsumeComponent, {closeOnBackdropClick: false, context: { topicNameParam: topicName}});
   }
 
 }

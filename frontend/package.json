@@ -53,6 +53,8 @@
     "core-js": "2.5.1",
     "echarts": "^4.9.0",
     "eva-icons": "^1.1.3",
+    "flat": "^5.0.2",
+    "flatten": "^1.0.3",
     "install": "^0.13.0",
     "intl": "1.2.5",
     "ionicons": "2.0.1",
@@ -74,6 +76,7 @@
     "tinymce": "4.5.7",
     "tslib": "^2.3.1",
     "typeface-exo": "0.0.22",
+    "uuid": "^8.3.2",
     "web-animations-js": "^2.3.2",
     "zone.js": "~0.11.4"
   },

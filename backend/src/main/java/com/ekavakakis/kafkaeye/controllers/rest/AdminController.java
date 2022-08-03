@@ -1,4 +1,4 @@
-package com.ekavakakis.kafkaeye.controllers;
+package com.ekavakakis.kafkaeye.controllers.rest;
 
 import com.ekavakakis.kafkaeye.models.dto.ConsumerGroupDTO;
 import com.ekavakakis.kafkaeye.models.dto.CreateTopicDTO;

@@ -26,13 +26,12 @@ public class KafkaAdminConfiguration {
     public AdminClient getKafkaAdmin() {
         Map<String, Object> configs = new HashMap<>();
         configs.put(AdminClientConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapAddress);
-//        configs.put("security.protocol", "SASL_SSL");
-//        configs.put("sasl.mechanism", "GSSAPI");
-//        configs.put("sasl.kerberos.service.name", "kafka");
-//        configs.put("ssl.truststore.location", trustoreLocation);
-//        configs.put("ssl.truststore.password", truststorePassword);
+        configs.put("security.protocol", "SASL_SSL");
+        configs.put("sasl.mechanism", "GSSAPI");
+        configs.put("sasl.kerberos.service.name", "kafka");
+        configs.put("ssl.truststore.location", trustoreLocation);
+        configs.put("ssl.truststore.password", truststorePassword);
         return KafkaAdminClient.create(configs);
     }
-
 
 }

@@ -1,9 +1,10 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {CreateTopicDTO, KafkaTopicDTO} from "../../../../@types/kafka-models";
+import {CreateTopicDTO} from "../../../../@types/kafka-models";
 import {KafkaAdminService} from "../../kafka-admin.service";
-import {first, map, tap} from "rxjs/operators";
+import {first, tap} from "rxjs/operators";
 import {NbDialogRef} from "@nebular/theme";
+import {Subject} from "rxjs";
 
 @Component({
   selector: 'ngx-create-topic',
@@ -12,6 +13,9 @@ import {NbDialogRef} from "@nebular/theme";
       <nb-card>
         <nb-card-header>
           Topic Details
+          <button nbButton type="button" status="primary" size="small" (click)="closeDialog($event)">
+            <nb-icon icon="close-outline"></nb-icon>
+          </button>
         </nb-card-header>
         <nb-card-body>
           <div class="row">
@@ -45,9 +49,10 @@ import {NbDialogRef} from "@nebular/theme";
   `,
   styleUrls: ['./create-topic.component.scss']
 })
-export class CreateTopicComponent implements OnInit {
+export class CreateTopicComponent implements OnInit, OnDestroy {
 
   topicForm: FormGroup;
+  destroy$: Subject<void> = new Subject();
 
   constructor(public fb: FormBuilder,
               private adminService: KafkaAdminService,
@@ -74,4 +79,12 @@ export class CreateTopicComponent implements OnInit {
     ).subscribe();
   }
 
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
+  closeDialog($event: MouseEvent) {
+    this.dialogRef.close();
+  }
 }

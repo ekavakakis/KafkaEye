@@ -1,9 +1,6 @@
 package com.ekavakakis.kafkaeye.services;
 
-import com.ekavakakis.kafkaeye.models.dto.ConsumerGroupDTO;
-import com.ekavakakis.kafkaeye.models.dto.CreateTopicDTO;
-import com.ekavakakis.kafkaeye.models.dto.DescribeClusterDTO;
-import com.ekavakakis.kafkaeye.models.dto.KafkaTopicDTO;
+import com.ekavakakis.kafkaeye.models.dto.*;
 import com.ekavakakis.kafkaeye.models.entities.KafkaNode;
 import com.ekavakakis.kafkaeye.models.entities.KafkaTopicPartition;
 import com.ekavakakis.kafkaeye.utils.InterfaceTransformation;
@@ -40,7 +37,6 @@ public class KafkaAdminServiceImpl implements KafkaAdminService {
         DescribeClusterResult result = adminClient.describeCluster();
         try {
             InterfaceTransformation.toKafkaNode(new ArrayList<>(result.nodes().get()));
-
             dto.setController(InterfaceTransformation.toKafkaNode(List.of(result.controller().get())).get(0));
             dto.setNodes(InterfaceTransformation.toKafkaNode(new ArrayList<>(result.nodes().get())));
         } catch (InterruptedException | ExecutionException e) {
@@ -66,7 +62,8 @@ public class KafkaAdminServiceImpl implements KafkaAdminService {
 
             DescribeTopicsResult describeTopicsResult = adminClient
                     .describeTopics(
-                            topicListings.stream()
+                            topicListings
+                                    .stream()
                                     .map(TopicListing::name)
                                     .toList()
                     );
@@ -74,32 +71,7 @@ public class KafkaAdminServiceImpl implements KafkaAdminService {
             topicDescriptions = describeTopicsResult.topicNameValues()
                     .values()
                     .stream()
-                    .map((KafkaFuture<TopicDescription> topicDescriptionKafkaFuture) -> {
-                        KafkaTopicDTO dto = null;
-                        try {
-                            TopicDescription topicDescription = topicDescriptionKafkaFuture.get();
-
-                            List<KafkaTopicPartition> topicPartitions = topicDescription
-                                    .partitions()
-                                    .stream()
-                                    .map((TopicPartitionInfo topicPartitionInfo) ->
-                                            new KafkaTopicPartition(
-                                                    topicPartitionInfo.partition(),
-                                                    new KafkaNode(topicPartitionInfo.leader()),
-                                                    InterfaceTransformation.toKafkaNode(topicPartitionInfo.replicas()),
-                                                    InterfaceTransformation.toKafkaNode(topicPartitionInfo.isr()))
-                                    ).toList();
-
-                            dto = new KafkaTopicDTO(
-                                    topicDescription.name(),
-                                    topicDescription.isInternal(),
-                                    topicDescription.name(),
-                                    topicPartitions);
-                        } catch (InterruptedException | ExecutionException e) {
-                            throw new RuntimeException("Error fetching topic listings", e);
-                        }
-                        return dto;
-                    })
+                    .map(this::getKafkaTopicDTO)
                     .toList();
 
         } catch (InterruptedException | ExecutionException e) {
@@ -107,6 +79,33 @@ public class KafkaAdminServiceImpl implements KafkaAdminService {
         }
 
         return Optional.ofNullable(topicDescriptions);
+    }
+
+    private KafkaTopicDTO getKafkaTopicDTO(KafkaFuture<TopicDescription> topicDescriptionKafkaFuture) {
+        KafkaTopicDTO dto;
+        try {
+            TopicDescription topicDescription = topicDescriptionKafkaFuture.get();
+
+            List<KafkaTopicPartition> topicPartitions = topicDescription
+                    .partitions()
+                    .stream()
+                    .map((TopicPartitionInfo topicPartitionInfo) ->
+                            new KafkaTopicPartition(
+                                    topicPartitionInfo.partition(),
+                                    new KafkaNode(topicPartitionInfo.leader()),
+                                    InterfaceTransformation.toKafkaNode(topicPartitionInfo.replicas()),
+                                    InterfaceTransformation.toKafkaNode(topicPartitionInfo.isr()))
+                    ).toList();
+
+            dto = new KafkaTopicDTO(
+                    topicDescription.name(),
+                    topicDescription.isInternal(),
+                    topicDescription.name(),
+                    topicPartitions);
+        } catch (InterruptedException | ExecutionException e) {
+            throw new RuntimeException("Error fetching topic listings", e);
+        }
+        return dto;
     }
 
     public void deleteTopic(String topicName) {
@@ -133,6 +132,11 @@ public class KafkaAdminServiceImpl implements KafkaAdminService {
         } catch (ExecutionException | InterruptedException e) {
             throw new RuntimeException("Failed fetching Consumer Groups", e);
         }
+    }
+
+    @Override
+    public List<ConsumerGroupDescriptionDTO> describeConsumerGroups(Set<String> groupIds) {
+        return null;
     }
 
     @Override

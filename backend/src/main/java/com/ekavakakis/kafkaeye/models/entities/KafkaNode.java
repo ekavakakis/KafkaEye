@@ -19,6 +19,14 @@ public class KafkaNode {
         this.rack = node.rack();
     }
 
+    public KafkaNode(int id, String idString, String host, int port, String rack) {
+        this.id = id;
+        this.idString = idString;
+        this.host = host;
+        this.port = port;
+        this.rack = rack;
+    }
+
     public int getId() {
         return id;
     }

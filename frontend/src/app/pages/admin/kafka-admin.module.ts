@@ -2,7 +2,16 @@ import {NgModule} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {TopicsComponent} from './topics/topics.component';
 import {KafkaAdminComponent} from './kafka-admin.component';
-import {NbButtonModule, NbCardModule, NbDialogModule, NbInputModule, NbListModule} from '@nebular/theme';
+import {
+  NbAutocompleteModule,
+  NbButtonModule,
+  NbCardModule,
+  NbDialogModule,
+  NbFormFieldModule,
+  NbIconModule,
+  NbInputModule,
+  NbListModule, NbTagModule
+} from '@nebular/theme';
 import {KafkaAdminService} from './kafka-admin.service';
 import {RouterModule} from '@angular/router';
 import {OverviewComponent} from './overview/overview.component';
@@ -15,6 +24,7 @@ import {BrokerDetailComponent} from './overview/broker-detail/broker-detail.comp
 import {ConsumerGroupOverviewComponent} from './overview/consumer-group-overview/consumer-group-overview.component';
 import {CreateTopicComponent} from './topics/create-topic/create-topic.component';
 import {ReactiveFormsModule} from '@angular/forms';
+import { TopicConsumeComponent } from './topics/topic-consume/topic-consume.component';
 
 @NgModule({
   declarations: [
@@ -26,7 +36,8 @@ import {ReactiveFormsModule} from '@angular/forms';
     BrokerOverviewComponent,
     BrokerDetailComponent,
     ConsumerGroupOverviewComponent,
-    CreateTopicComponent],
+    CreateTopicComponent,
+    TopicConsumeComponent],
   imports: [
     CommonModule,
     RouterModule,
@@ -38,6 +49,10 @@ import {ReactiveFormsModule} from '@angular/forms';
     NbDialogModule,
     NbInputModule,
     ReactiveFormsModule,
+    NbIconModule,
+    NbFormFieldModule,
+    NbTagModule,
+    NbAutocompleteModule,
   ],
   providers: [KafkaAdminService],
 })
